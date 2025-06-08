@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ورود با لایسنس</title>
+  <style>
+    body {
+      font-family: 'Tahoma', sans-serif;
+      background: linear-gradient(to bottom, #ffe4e1, #add8e6);
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    .panel {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      width: 300px;
+      margin: 100px auto;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      background-color: #f06292;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ec407a;
+    }
+    #progressContainer {
+      margin-top: 20px;
+    }
+    .progress-bar {
+      height: 20px;
+      background-color: #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background-color: #4caf50;
+      width: 0;
+      text-align: center;
+      color: white;
+      line-height: 20px;
+    }
+    #logout {
+      background-color: #ff5722;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- فرم ورود -->
+  <div class="panel" id="loginPanel">
+    <h2>ورود با کد لایسنس</h2>
+    <input type="text" id="licenseCode" placeholder="کد لایسنس را وارد کنید">
+    <button onclick="login()">ورود</button>
+    <button onclick="adminLogin()">پنل مدیریت</button>
+  </div>
+
+  <!-- پنل کاربر -->
+  <div class="panel" id="userPanel" style="display:none;">
+    <h2>خوش آمدید 🎉</h2>
+    <div id="progressContainer">
+      <p>مدت زمان باقی‌مانده از اشتراک:</p>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill">0%</div>
+      </div>
+    </div>
+    <button id="logout" onclick="logout()">خروج</button>
+  </div>
+
+  <!-- پنل مدیریت -->
+  <div class="panel" id="adminPanel" style="display:none;">
+    <h2>مدیریت سیستم</h2>
+    <p>سلام مدیر عزیز 😎</p>
+    <button onclick="logout()">خروج</button>
+  </div>
+
+  <script>
+    const licenseData = {
+      "abc123": "2025-06-15",
+      "reza456": "2025-06-20",
+      "test999": "2025-06-25"
+    };
+
+    function login() {
+      const code = document.getElementById("licenseCode").value.trim();
+      const expiryDate = licenseData[code];
+
+      if (expiryDate) {
+        showUserPanel(expiryDate);
+      } else {
+        alert("کد لایسنس معتبر نیست.");
+      }
+    }
+
+    function showUserPanel(expiry) {
+      document.getElementById("loginPanel").style.display = "none";
+      document.getElementById("userPanel").style.display = "block";
+
+      const now = new Date();
+      const end = new Date(expiry);
+      const start = new Date(end.getTime() - (15 * 24 * 60 * 60 * 1000)); // اشتراک 15 روزه
+
+      const total = end - start;
+      const remaining = end - now;
+      let percent = Math.max(0, Math.min(100, Math.floor((remaining / total) * 100)));
+
+      const progress = document.getElementById("progressFill");
+      progress.style.width = percent + "%";
+      progress.textContent = percent + "%";
+    }
+
+    function adminLogin() {
+      const pass = prompt("رمز ورود مدیر را وارد کنید:");
+      if (pass === "Ali.dr.N.") {
+        document.getElementById("loginPanel").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+      } else {
+        alert("رمز اشتباه است!");
+      }
+    }
+
+    function logout() {
+      document.getElementById("loginPanel").style.display = "block";
+      document.getElementById("userPanel").style.display = "none";
+      document.getElementById("adminPanel").style.display = "none";
+      document.getElementById("licenseCode").value = "";
+    }
+  </script>
+</body>
+</html>
